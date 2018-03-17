@@ -1,0 +1,16 @@
+{
+  "name": "heartratesensor",
+  "version": "1.0.0",
+  "description": "A simple project to read from my heartrate sensor and show that on a websocket!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Phill Spiess",
+  "license": "MIT",
+  "dependencies": {
+    "ant-plus": "0.0.9",
+    "websocket": "^1.0.24",
+    "yargs": "^7.0.2"
+  }
+}

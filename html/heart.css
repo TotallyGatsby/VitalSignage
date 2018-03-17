@@ -1,0 +1,84 @@
+.container {
+    width:300px;
+    height:160px;
+    position:relative;
+}
+
+p {
+    z-index:100;
+    color:black;
+    font-family:'Montserrat', sans-serif;
+    font-weight:900;
+}
+
+.max {
+    position: absolute;
+    left: 440px;
+    top: -20px;
+}
+
+.min {
+    position: absolute;
+    left: 440px;
+    top: 65px;
+}
+
+.text-small-value {
+    font-size: 28px;  
+    -webkit-text-stroke: white 2px;
+    text-stroke: white 2px;  
+}
+
+.text-name {
+    position:absolute;
+    font-size: 30px;
+    left: 20px;
+    top:-25px;
+    -webkit-text-stroke: white 2px;
+    text-stroke: white 2px;
+}
+
+.hr-text-container {
+    position:absolute; 
+    left:123%;
+}
+
+.text-hr {
+    position:relative;
+    font-size: 76px;
+    left: -50%;
+    top: -60px;
+    -webkit-text-stroke: white 2px;
+    text-stroke: white 2px;
+}
+
+.heart-image {
+    position:absolute;
+    left:300px;
+    top:0;
+    z-index:50;
+}
+
+.inlinesparkline {
+    z-index:100;
+    position:absolute;
+    left:20px;
+    top:49px;
+    z-index:0;
+}
+
+.heart-image.animated {
+    -webkit-animation: 500ms cubic-bezier(0.4, 0, 0.2, 1) beat  alternate;
+}
+
+@keyframes beat {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.8); }
+    100% {transform: scale(1); }
+}
+
+@-webkit-keyframes beat {
+    0% { -webkit-transform: scale(1); }
+    50% { -webkit-transform: scale(0.8); }
+    100% { -webkit-transform: scale(1); }
+}

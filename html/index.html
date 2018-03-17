@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Heartbeat Sensor Web Gizmo</title>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src="jquery.sparkline.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet">
+    <link href="heart.css" rel="stylesheet">
+
+<body>
+    <div class="container">
+        <p class="text-name">TOTALLYGATSBY</p> <!-- WHO'S THAT POKEMON TODO: Make this dynamic-->
+        <div class="hr-text-container">
+            <p class="text-hr">87</p> <!-- Current HR -->
+        </div>
+        <img class="heart-image" src="lilheart.png" /> <!-- This is the pretty heart! -->
+        <span class="inlinesparkline"></span> <!-- I use jquery.sparkline to generate my pretty sparkline -->
+        <p class="max text-small-value">80</p> <!-- Maximum HR -->
+        <p class="min text-small-value">70</p> <!-- Minimum HR -->
+    </div>
+
+<!--
+    Maybe you could have two players shown at the same time!
+    <div class="container">
+        <p class="text-name">PLAYER 2</p>
+        <div class="hr-text-container">
+            <p class="text-hr">102</p>
+        </div>
+        <img class="heart-image" src="lilheart.png" />
+        <span class="inlinesparkline"></span>
+        <p class="max text-small-value">80</p> 
+        <p class="min text-small-value">70</p> 
+    </div>
+-->
+    <script type="text/javascript">
+        $(function () {
+            // Check for default or moz websocket
+            window.WebSocket = window.WebSocket || window.MozWebSocket;
+
+            // Animate the heart beating
+            var hbDuration = '600ms'; // This number seems good
+            var maxHeartbeats = 180; // ANY FASTER AND YOU LITERALLY EXPLODE. THIS IS PEAK HUMAN HEARTRATE.
+            var heartbeats = []; // Historical queue of HR data (for sparklinin')
+
+             $('.heart-image').on('webkitAnimationEnd oAnimationEnd msAnimationEnd animationEnd',   
+                function(e) {                    
+                    // We remove and re-add the animation class (because css animations are lame)
+                    $('.heart-image').removeClass('animated'); 
+                    // Update the duration between animation cycles to avoid jumpy animations
+                    $('.heart-image').css('animation-duration', hbDuration); 
+                    // You must include a small timeout between removing and readding the class, or it won't work
+                    setTimeout(() => {$('.heart-image').addClass('animated');}, 15); 
+            });
+
+            $('.heart-image').addClass('animated');
+
+            // Hardcoded to one connection now
+            // TODO Open sockets to multiple people and show all their lilhearts
+            var connection = new WebSocket('ws://127.0.0.1:12021');
+
+            connection.onopen = function () {
+                // connection is opened and ready to use
+            };
+
+            connection.onclose = function(event) {
+                console.log("connection closed ", event);
+            };
+
+            connection.onerror = function (error) {
+                // an error occurred when sending/receiving data
+                console.log("connection error ", error);
+            };
+
+            connection.onmessage = function (message) {
+                // try to decode json (I assume that each message from server is json)
+                try {
+                    var json = JSON.parse(message.data);
+                } catch (e) {
+                    console.log('This doesn\'t look like a valid JSON: ', message.data);
+                    return;
+                }
+                if (json && json.data && json.data.heartRate) {
+                    // If this heartbeat rate is different than the previous rate, update the rate.
+                    if (heartbeats.length > 0 && heartbeats[heartbeats.length - 1] != json.data.heartRate) {
+                        // If my crazy math is right, this eyeballs nicely.
+                        hbDuration = ((60000/json.data.heartRate) - 200) + 'ms';  
+                        // Yep, that checks out!
+                    }
+
+                    heartbeats.push(json.data.heartRate);
+                    if (heartbeats.length > maxHeartbeats) {
+                        heartbeats.shift();
+                    }
+
+                    $(".text-hr").text(json.data.heartRate);
+                    $(".max").text(json.data.maxRate);
+                    $(".min").text(json.data.minRate);
+                    $(".inlinesparkline").sparkline(heartbeats, {width:'330px', height:'40px', fillColor: false, spotColor: false, minSpotColor:false, maxSpotColor:false, lineWidth:3, lineColor:'#A0363B'});
+                }
+            };
+        });    
+    </script>
