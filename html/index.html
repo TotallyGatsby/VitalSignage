@@ -100,7 +100,7 @@
                     $(".text-hr").text(json.data.heartRate);
                     $(".max").text(json.data.maxRate);
                     $(".min").text(json.data.minRate);
-                    $(".inlinesparkline").sparkline(heartbeats, {width:'330px', height:'40px', fillColor: false, spotColor: false, minSpotColor:false, maxSpotColor:false, lineWidth:3, lineColor:'#A0363B'});
+                    $(".inlinesparkline").sparkline(heartbeats, {width:'330px', height:'40px', fillColor: false, spotColor: false, minSpotColor:false, maxSpotColor:false, lineWidth:3, lineColor:'#A0363B', chartRangeMin: json.data.minRate, chartRangeMax: json.data.maxRate});
                 }
             };
         });    
